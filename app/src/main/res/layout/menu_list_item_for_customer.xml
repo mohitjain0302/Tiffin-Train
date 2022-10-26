@@ -41,37 +41,6 @@
             tools:text="Abcde"
             android:textSize="16sp" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="0.5"
-
-        >
-         <ImageView
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:src="@drawable/ic_baseline_add_24"
-             android:id="@+id/addition_button"
-             android:padding="2sp"
-         />
-
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:textStyle="bold"
-              android:textColor="@color/black"
-              android:id="@+id/number_tobeadded"
-              android:text="0"
-              />
-
-          <ImageView
-              android:padding="2sp"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:id="@+id/subtraction_button"
-              android:src="@drawable/ic_baseline_indeterminate_check_box_24"/>
-          </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"

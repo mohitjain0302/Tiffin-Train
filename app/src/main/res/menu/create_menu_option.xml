@@ -8,10 +8,10 @@
 
     </item>
 
-    <item android:id="@+id/create_subscription_button"
-        android:icon="@drawable/ic_baseline_subscriptions_24"
-        android:title=""
-        app:showAsAction="always">
+<!--    <item android:id="@+id/create_subscription_button"-->
+<!--        android:icon="@drawable/ic_baseline_subscriptions_24"-->
+<!--        android:title=""-->
+<!--        app:showAsAction="always">-->
 
-    </item>
+<!--    </item>-->
 </menu>

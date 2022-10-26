@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,6 +40,7 @@ public class ViewAndEditMenuActivity extends AppCompatActivity {
     private String currentUserEmail ;
     private ArrayList<String> menuUIds ;
     private TiffinCentre currentTiffinCentre ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +87,7 @@ public class ViewAndEditMenuActivity extends AppCompatActivity {
                                         TextView menuRate = (TextView) listItemView.findViewById(R.id.menu_rate_text_view);
                                         menuRate.setText("Rs " + Integer.toString(currentMenu.getMenuRate()) + "/-");
 
-                                        ArrayList<String> menuItems = currentMenu.getMenuItems();
+                                        ArrayList<String> menuItems = currentMenu.getMenuItem();
                                         String str = "";
                                         for (int i = 0; i < menuItems.size(); i++) {
                                             str += menuItems.get(i);
@@ -106,6 +108,18 @@ public class ViewAndEditMenuActivity extends AppCompatActivity {
                                         TextView displayItemsTextView = listItemView.findViewById(R.id.display_items_text_view);
                                         displayItemsTextView.setText(str.substring(0, str.length() - 1));
 
+                                        ImageView subscriptionButton = listItemView.findViewById(R.id.subsription_button);
+                                        if(subscriptionButton != null) {
+                                            subscriptionButton.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    Intent intent = new Intent(ViewAndEditMenuActivity.this, SubscriptionsActivity.class);
+                                                    intent.putExtra("menuUId", currentMenuUId);
+                                                    startActivity(intent);
+                                                }
+                                            });
+                                        }
+
                                         menuListLayout.addView(listItemView);
                                     }
                                 }
@@ -119,6 +133,12 @@ public class ViewAndEditMenuActivity extends AppCompatActivity {
         centreManagementMenuButton =  findViewById(R.id.centre_management_menu_button);
         centreManagementMenuButton.setBackgroundColor(Color.parseColor("#F57C00"));
 
+//        subscriptionButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(ViewAndEditMenuActivity.this , SubscriptionsActivity.class));
+//            }
+//        });
         centreManagementHomeButton = findViewById(R.id.centre_management_home_button);
         centreManagementHomeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,11 +164,11 @@ public class ViewAndEditMenuActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-        if(item_id == R.id.create_subscription_button){
+        /*if(item_id == R.id.create_subscription_button){
             Intent intent = new Intent(ViewAndEditMenuActivity.this , SubscriptionsActivity.class);
             intent.putExtra("key_current_user_email" , currentUserEmail) ;
             startActivity(intent);
-        }
+        }*/
 
         return true;
     }
