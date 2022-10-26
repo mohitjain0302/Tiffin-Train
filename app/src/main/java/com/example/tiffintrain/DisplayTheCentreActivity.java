@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -45,7 +46,7 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
     private TiffinCentre currentTiffinCentre;
     private ImageView add_button;
     private ImageView subtract_button;
-    private TextView tiffinQuantity ;
+    private TextView tiffinQuantity;
     final int UPI_PAYMENT = 0;
     //private TextView number;
 
@@ -62,7 +63,7 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
 
         centreMenusListLayout = findViewById(R.id.centre_menus_list_layout);
 
-        tiffinQuantity = findViewById(R.id.tiffin_quantity) ;
+        tiffinQuantity = findViewById(R.id.tiffin_quantity);
         contact.setText("" + currentCentre.getContactNo());
         address.setText(currentCentre.getAddress());
         centre.setText(currentCentre.getName());
@@ -74,7 +75,7 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 currentTiffinCentre = documentSnapshot.toObject(TiffinCentre.class);
 
-                if(currentTiffinCentre.getMenuUIds() != null) {
+                if (currentTiffinCentre.getMenuUIds() != null) {
                     if (currentTiffinCentre.getMenuUIds().isEmpty()) {
                         Log.d("Uid", "Going In If");
                     } else {
@@ -115,11 +116,10 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
                                         String str1 = currentMenu.getType();
                                         String str2 = "NonVeg";
 
-                                        if(str1!= null && str1.equals(str2)){
-                                            Log.d(str1,"going for non veg");
+                                        if (str1 != null && str1.equals(str2)) {
+                                            Log.d(str1, "going for non veg");
                                             img.setImageResource(R.drawable.nonveg);
-                                        }
-                                        else{
+                                        } else {
                                             img.setImageResource(R.drawable.veg_symbol);
                                         }
 
@@ -129,7 +129,7 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
                                         listItemView.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(DisplayTheCentreActivity.this );
+                                                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(DisplayTheCentreActivity.this);
                                                 View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.bottom_sheet_dialogue_order,
                                                         (LinearLayout) findViewById(R.id.bottomSheetContainerOrder));
                                                 Button incrementButton = bottomSheetView.findViewById(R.id.increment_button);
@@ -137,20 +137,21 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
                                                 TextView sevenDayRate = bottomSheetView.findViewById(R.id.seven_day_rate);
                                                 TextView fifteenDayRate = bottomSheetView.findViewById(R.id.fifteen_day_rate);
                                                 TextView oneMonthRate = bottomSheetView.findViewById(R.id.one_month_rate);
-                                                if(currentMenu.getIsSevenDay())
-                                                    sevenDayRate.setText("Rs "+currentMenu.getSevenDayRate());
-                                                if(currentMenu.getIsOneMonth())
-                                                    oneMonthRate.setText("Rs "+currentMenu.getOneMonthRate());
-                                                if(currentMenu.getIsFifteenDay())
-                                                    fifteenDayRate.setText("Rs "+currentMenu.getFifteenDayRate());
+                                                Button placeOrderButton = bottomSheetView.findViewById(R.id.place_order_button);
+                                                if (currentMenu.getIsSevenDay())
+                                                    sevenDayRate.setText("Rs " + currentMenu.getSevenDayRate());
+                                                if (currentMenu.getIsOneMonth())
+                                                    oneMonthRate.setText("Rs " + currentMenu.getOneMonthRate());
+                                                if (currentMenu.getIsFifteenDay())
+                                                    fifteenDayRate.setText("Rs " + currentMenu.getFifteenDayRate());
                                                 incrementButton.setOnClickListener(new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View view) {
                                                         TextView tiffinQuantity = bottomSheetView.findViewById(R.id.tiffin_quantity);
                                                         int curr = Integer.parseInt(tiffinQuantity.getText().toString());
-                                                        tiffinQuantity.setText(""+ ++curr);
+                                                        tiffinQuantity.setText("" + ++curr);
                                                         TextView orderAmount = bottomSheetView.findViewById(R.id.order_amount);
-                                                        orderAmount.setText("Rs " + curr * currentMenu.getMenuRate() );
+                                                        orderAmount.setText("Rs " + curr * currentMenu.getMenuRate());
                                                     }
                                                 });
                                                 decrementButton.setOnClickListener(new View.OnClickListener() {
@@ -158,13 +159,57 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
                                                     public void onClick(View view) {
                                                         TextView tiffinQuantity = bottomSheetView.findViewById(R.id.tiffin_quantity);
                                                         int curr = Integer.parseInt(tiffinQuantity.getText().toString());
-                                                        if(curr!=0){
-                                                            tiffinQuantity.setText(""+ --curr);
+                                                        if (curr != 0) {
+                                                            tiffinQuantity.setText("" + --curr);
                                                             TextView orderAmount = bottomSheetView.findViewById(R.id.order_amount);
-                                                            orderAmount.setText("Rs " + curr * currentMenu.getMenuRate() );
+                                                            orderAmount.setText("Rs " + curr * currentMenu.getMenuRate());
                                                         }
                                                     }
                                                 });
+
+                                                placeOrderButton.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view) {
+
+                                                        CheckBox checkSeven = bottomSheetView.findViewById(R.id.check_sevenDay);
+                                                        CheckBox checkFifteenDay = bottomSheetView.findViewById(R.id.check_fifteenDay);
+                                                        CheckBox checkOneMonth = bottomSheetView.findViewById(R.id.check_oneMonth);
+                                                        CheckBox checkNone = bottomSheetView.findViewById(R.id.check_none);
+
+                                                        String finalAmount = "";
+
+                                                        if (checkSeven.isChecked()) {
+                                                            TextView amount = bottomSheetView.findViewById(R.id.seven_day_rate);
+                                                            finalAmount += amount.getText().toString();
+                                                        } else if (checkFifteenDay.isChecked()) {
+                                                            TextView amount = bottomSheetView.findViewById(R.id.fifteen_day_rate);
+                                                            finalAmount += amount.getText().toString();
+                                                        } else if (checkOneMonth.isChecked()) {
+                                                            TextView amount = bottomSheetView.findViewById(R.id.one_month_rate);
+                                                            finalAmount += amount.getText().toString();
+                                                        } else if (checkNone.isChecked()) {
+                                                            TextView amount = bottomSheetView.findViewById(R.id.order_amount);
+                                                            finalAmount += amount.getText().toString();
+                                                        }
+
+
+                                                        Toast.makeText(DisplayTheCentreActivity.this, "paytm username is  : " + currentCentre.getPaytm_username(), Toast.LENGTH_SHORT).show();
+
+                                                        Intent intent = new Intent(DisplayTheCentreActivity.this, PaymentActivity.class);
+                                                        intent.putExtra("Amount1", finalAmount);
+                                                        intent.putExtra("Current_centre", currentCentre);
+                                                        startActivity(intent);
+
+//                String upiId = "9521766675@paytm";
+//                String note = "hi";
+//                String name = currentCentre.getName();
+//
+//                Log.d(finalamount,"The amount is");
+//
+//                payUsingUpi(finalamount, upiId, name, note);
+                                                    }
+                                                });
+
                                                 bottomSheetDialog.setContentView(bottomSheetView);
                                                 bottomSheetDialog.show();
                                             }
@@ -195,30 +240,8 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
             }
         });
 
-//        Button payment = findViewById(R.id.pay_button);
-//
-//        payment.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                TextView numb = findViewById(R.id.amount_id);
-//                String finalamount = numb.getText().toString();
-//
-//                Toast.makeText(DisplayTheCentreActivity.this,"paytm username is  : " + currentCentre.getPaytm_username(),Toast.LENGTH_SHORT).show();
-//
-//                Intent i = new Intent(DisplayTheCentreActivity.this,PaymentActivity.class);
-//                i.putExtra("Amount1",finalamount);
-//                i.putExtra("Current_centre",currentCentre);
-//                startActivity(i);
-//
-////                String upiId = "9521766675@paytm";
-////                String note = "hi";
-////                String name = currentCentre.getName();
-////
-////                Log.d(finalamount,"The amount is");
-////
-////                payUsingUpi(finalamount, upiId, name, note);
-//            }
-//        });
+
+
 
     }
 
@@ -231,8 +254,7 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
-
-
-
 }
+
+
+
