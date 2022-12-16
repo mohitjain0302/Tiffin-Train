@@ -62,10 +62,7 @@ public class SubscriptionsActivity extends AppCompatActivity {
 //                    Log.e("hi", "BHai bahar aa gye : " + centre.getSevenDay());
 
                     if (menu.getIsSevenDay() == true) {
-
-//                        Log.e("hi", "BHai andar aa gye : ");
                         sevenDayBox.setChecked(true);
-                    //    sevenDayPrice.setText("" + centre.getSevenday_price());
                     }
 
                         sevenDayPrice.setText("" + menu.getSevenDayRate());

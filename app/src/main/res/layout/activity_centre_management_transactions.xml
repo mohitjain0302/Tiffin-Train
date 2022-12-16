@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".CentreManagementTransactionsActivity">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <ListView
         android:id="@+id/transaction_list"
         android:layout_width="match_parent"
@@ -17,6 +22,7 @@
         android:background="@color/background_pitch">
 
     </ListView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
     <LinearLayout

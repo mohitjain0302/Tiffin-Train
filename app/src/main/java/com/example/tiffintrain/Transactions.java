@@ -1,16 +1,16 @@
 package com.example.tiffintrain;
 
-public class Orders {
+public class Transactions {
 
     String user_email;
     String tiffin_center_email;
     String amount;
 
-    public Orders(){
+    public Transactions(){
 
     }
 
-    public Orders(String user_email,String tiffin_center_email,String amount)
+    public Transactions(String user_email,String tiffin_center_email,String amount)
     {
         this.user_email = user_email;
         this.tiffin_center_email = tiffin_center_email;

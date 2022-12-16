@@ -59,7 +59,7 @@ public class DisplayCentresActivity extends AppCompatActivity {
 
         CentreAdapter adapter = new CentreAdapter(this, centres);
         ListView listView = findViewById(R.id.list);
-        listView.setAdapter(adapter);
+//        listView.setAdapter(adapter);
 
 
         centres.clear();
@@ -86,6 +86,7 @@ public class DisplayCentresActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        listView.setAdapter(adapter);
     }
 
     @Override

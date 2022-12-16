@@ -156,6 +156,31 @@
             android:layout_marginLeft="120dp"/>
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Ons :"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/addons_parent_layout">
+
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/delivery_address_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Delivery Address"
+        android:inputType="text"/>
+
     <Button
         android:id="@+id/place_order_button"
         android:layout_width="wrap_content"

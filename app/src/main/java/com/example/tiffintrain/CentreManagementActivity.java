@@ -43,7 +43,7 @@ public class CentreManagementActivity extends AppCompatActivity {
 
     private LinearLayout centreManagementHomeButton ;
     private LinearLayout centreManagementMenuButton ;
-    private LinearLayout centreManagementSubscriptionButton ;
+    private LinearLayout centreManagementOrdersButton ;
     private LinearLayout centreManagementTransactionsButton;
 
     private String currentUserEmail ;
@@ -62,6 +62,8 @@ public class CentreManagementActivity extends AppCompatActivity {
         centreManagementHomeButton =  findViewById(R.id.centre_management_home_button);
         centreManagementHomeButton.setBackgroundColor(Color.parseColor("#F57C00"));
 
+        centreManagementOrdersButton =  findViewById(R.id.centre_management_orders_button);
+
         centreManagementMenuButton = findViewById(R.id.centre_management_menu_button);
 
 
@@ -72,6 +74,14 @@ public class CentreManagementActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(CentreManagementActivity.this,CentreManagementTransactionsActivity.class);
                 intent.putExtra("key_current_user_email" , currentUserEmail) ;
+                startActivity(intent);
+            }
+        });
+
+        centreManagementOrdersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CentreManagementActivity.this,CentreManagementOrdersActivity.class);
                 startActivity(intent);
             }
         });

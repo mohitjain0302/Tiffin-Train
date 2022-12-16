@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ public class PaymentActivity extends AppCompatActivity {
 
     TiffinCentre current_centre;
     TextView Amount;
+    OnOrderDetails onOrderDetails ;
     Button pay_b;
     String amount;
     FirebaseAuth mAuth ;
@@ -45,7 +47,10 @@ public class PaymentActivity extends AppCompatActivity {
         Intent i = getIntent();
 
         amount = i.getStringExtra("Amount1");
+        amount = amount.substring(3);
+        amount = "Rs. " + amount ;
         current_centre = (TiffinCentre) i.getSerializableExtra("Current_centre");
+        onOrderDetails = (OnOrderDetails) i.getSerializableExtra("OnOrderDetails") ;
 
         String UpiId = current_centre.getUpi_id();
 
@@ -105,19 +110,30 @@ public class PaymentActivity extends AppCompatActivity {
             String address = cursor.getString(1);
             String body = cursor.getString(0);
 
-            if(address.contains("Paytm") && body.contains(paytm_user_name) && body.contains(amount)){
+//           Log.d("hello", "in jaa raha : ");
+
+            if((address.contains("Paytm") || address.contains("PAYTM")) && address.contains(amount)){
+
                 flag=1;
+
+//                Log.d("hello", "jaa raha : ");
 
                 Toast.makeText(PaymentActivity.this,"Payment Successful : ",Toast.LENGTH_SHORT).show();
 
                 String user_email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
                 String tiffin_center_email = current_centre.getEmail();
-                Orders order = new Orders(user_email,tiffin_center_email,amount);
+                Transactions transaction = new Transactions(user_email,tiffin_center_email,amount);
 
-                FirebaseFirestore.getInstance().collection("Orders").add(order).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                FirebaseFirestore.getInstance().collection("Transactions").add(transaction).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(PaymentActivity.this,"Added to databse ",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PaymentActivity.this,"Payment successful",Toast.LENGTH_SHORT).show();
+                        FirebaseFirestore.getInstance().collection("Orders").add(onOrderDetails).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Toast.makeText(PaymentActivity.this , "Order Placed",Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 });
 

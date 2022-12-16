@@ -9,14 +9,16 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_buttons_layout">
+        android:layout_above="@id/bottom_buttons_layout"
+        android:background="@color/background_pitch">
 
         <LinearLayout
-            android:id="@+id/menu_list_layout"
+            android:id="@+id/orders_list_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="2dp"
+            >
 
         </LinearLayout>
     </ScrollView>

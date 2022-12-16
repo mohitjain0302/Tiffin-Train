@@ -13,10 +13,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class TransactionAdapter extends ArrayAdapter<Orders> {
+public class TransactionAdapter extends ArrayAdapter<Transactions> {
 
     private Context mContext ;
-    public TransactionAdapter(Activity context, ArrayList<Orders> orders) {
+    public TransactionAdapter(Activity context, ArrayList<Transactions> orders) {
         super(context, 0, orders);
         mContext = context ;
     }
@@ -28,13 +28,13 @@ public class TransactionAdapter extends ArrayAdapter<Orders> {
             listItemView = LayoutInflater.from(getContext()).inflate(R.layout.transaction_list_item, parent, false);
         }
 
-        Orders currentTransaction = getItem(position);
+        Transactions currentTransaction = getItem(position);
 
         TextView payerName =(TextView) listItemView.findViewById(R.id.payer_name_text_view);
         payerName.setText(currentTransaction.getUser_email());
 
         TextView Amount = (TextView) listItemView.findViewById(R.id.amount_text_view);
-        Amount.setText("Rs " + currentTransaction.getAmount());
+        Amount.setText("" + currentTransaction.getAmount());
 
         return listItemView;
     }

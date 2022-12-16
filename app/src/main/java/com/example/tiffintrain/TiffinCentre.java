@@ -1,5 +1,7 @@
 package com.example.tiffintrain;
 
+import android.widget.CheckBox;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -15,6 +17,12 @@ public class TiffinCentre implements Serializable {
     private ArrayList<String> menuUIds ;
     private String upi_id;
     private String paytm_username;
+    private boolean isChapatiAddOn ;
+    private boolean isSweetdishAddOn ;
+    private boolean isCurdAddOn ;
+    private int chapatiRate ;
+    private int sweetdishRate ;
+    private int curdRate ;
 
     public TiffinCentre(){
 
@@ -30,6 +38,12 @@ public class TiffinCentre implements Serializable {
         this.centre_longitude = centre_longitude ;
         this.upi_id = upi_id;
         this.paytm_username = paytm_username;
+        this.isChapatiAddOn = false ;
+        this.isSweetdishAddOn = false ;
+        this.isCurdAddOn = false ;
+        this.chapatiRate = 0 ;
+        this.sweetdishRate = 0 ;
+        this.curdRate = 0 ;
     }
 
     public String getEmail() {
@@ -76,4 +90,27 @@ public class TiffinCentre implements Serializable {
         return paytm_username;
     }
 
+    public int getChapatiRate() {
+        return chapatiRate;
+    }
+
+    public int getSweetdishRate() {
+        return sweetdishRate;
+    }
+
+    public int getCurdRate() {
+        return curdRate;
+    }
+
+    public boolean getIsChapatiAddOn() {
+        return isChapatiAddOn;
+    }
+
+    public boolean getIsSweetdishAddOn() {
+        return isSweetdishAddOn;
+    }
+
+    public boolean getIsCurdAddOn() {
+        return isCurdAddOn;
+    }
 }

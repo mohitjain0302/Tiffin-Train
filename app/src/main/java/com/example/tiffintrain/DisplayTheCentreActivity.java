@@ -14,11 +14,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -28,6 +30,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -35,10 +38,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DisplayTheCentreActivity extends AppCompatActivity {
 
     private TiffinCentre currentCentre;
+    FirebaseAuth mAuth ;
     private int sum1 = 0;
     private LinearLayout centreMenusListLayout;
     private String tiffinCentreUId;
@@ -48,6 +53,10 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
     private ImageView subtract_button;
     private TextView tiffinQuantity;
     final int UPI_PAYMENT = 0;
+    public int addOnChapatiViewId ;
+    private int addOnCurdViewId ;
+    private int addOnSweetDishViewId ;
+    private String userEmail;
     //private TextView number;
 
     @Override
@@ -55,6 +64,8 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_the_centre);
 
+        mAuth = FirebaseAuth.getInstance();
+        userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
         currentCentre = (TiffinCentre) getIntent().getSerializableExtra("centre");
         TextView contact = findViewById(R.id.contact_no_id);
         TextView address = findViewById(R.id.address_id);
@@ -134,6 +145,7 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
                                                         (LinearLayout) findViewById(R.id.bottomSheetContainerOrder));
                                                 Button incrementButton = bottomSheetView.findViewById(R.id.increment_button);
                                                 Button decrementButton = bottomSheetView.findViewById(R.id.decrement_button);
+                                                CheckBox noneCheckBox = bottomSheetView.findViewById(R.id.check_none);
                                                 TextView sevenDayRate = bottomSheetView.findViewById(R.id.seven_day_rate);
                                                 TextView fifteenDayRate = bottomSheetView.findViewById(R.id.fifteen_day_rate);
                                                 TextView oneMonthRate = bottomSheetView.findViewById(R.id.one_month_rate);
@@ -147,22 +159,34 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
                                                 incrementButton.setOnClickListener(new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View view) {
-                                                        TextView tiffinQuantity = bottomSheetView.findViewById(R.id.tiffin_quantity);
-                                                        int curr = Integer.parseInt(tiffinQuantity.getText().toString());
-                                                        tiffinQuantity.setText("" + ++curr);
-                                                        TextView orderAmount = bottomSheetView.findViewById(R.id.order_amount);
-                                                        orderAmount.setText("Rs " + curr * currentMenu.getMenuRate());
+                                                        if(noneCheckBox.isChecked())
+                                                        {
+                                                            TextView tiffinQuantity = bottomSheetView.findViewById(R.id.tiffin_quantity);
+                                                            int curr = Integer.parseInt(tiffinQuantity.getText().toString());
+                                                            tiffinQuantity.setText("" + ++curr);
+                                                            TextView orderAmount = bottomSheetView.findViewById(R.id.order_amount);
+                                                            orderAmount.setText("Rs " + curr * currentMenu.getMenuRate());
+                                                        }
+                                                        else{
+                                                            Toast.makeText(DisplayTheCentreActivity.this , "Please select the None option for Ordering now", Toast.LENGTH_SHORT).show();
+                                                        }
                                                     }
                                                 });
                                                 decrementButton.setOnClickListener(new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View view) {
-                                                        TextView tiffinQuantity = bottomSheetView.findViewById(R.id.tiffin_quantity);
-                                                        int curr = Integer.parseInt(tiffinQuantity.getText().toString());
-                                                        if (curr != 0) {
-                                                            tiffinQuantity.setText("" + --curr);
-                                                            TextView orderAmount = bottomSheetView.findViewById(R.id.order_amount);
-                                                            orderAmount.setText("Rs " + curr * currentMenu.getMenuRate());
+                                                        if(noneCheckBox.isChecked())
+                                                        {
+                                                            TextView tiffinQuantity = bottomSheetView.findViewById(R.id.tiffin_quantity);
+                                                            int curr = Integer.parseInt(tiffinQuantity.getText().toString());
+                                                            if (curr != 0) {
+                                                                tiffinQuantity.setText("" + --curr);
+                                                                TextView orderAmount = bottomSheetView.findViewById(R.id.order_amount);
+                                                                orderAmount.setText("Rs " + curr * currentMenu.getMenuRate());
+                                                            }
+                                                        }
+                                                        else{
+                                                            Toast.makeText(DisplayTheCentreActivity.this , "Please select the None option for Ordering now", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
                                                 });
@@ -175,43 +199,209 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
                                                         CheckBox checkFifteenDay = bottomSheetView.findViewById(R.id.check_fifteenDay);
                                                         CheckBox checkOneMonth = bottomSheetView.findViewById(R.id.check_oneMonth);
                                                         CheckBox checkNone = bottomSheetView.findViewById(R.id.check_none);
+                                                        int noOfTiffins = 0;
 
-                                                        String finalAmount = "";
+                                                        short isSeven = 0, isFifteen = 0, isOneMonth = 0, isNone = 0;
+                                                        if (checkSeven.isChecked())
+                                                            isSeven = 1;
+                                                        if (checkFifteenDay.isChecked())
+                                                            isFifteen = 1;
+                                                        if (checkOneMonth.isChecked())
+                                                            isOneMonth = 1;
+                                                        if (checkNone.isChecked())
+                                                            isNone = 1;
 
-                                                        if (checkSeven.isChecked()) {
-                                                            TextView amount = bottomSheetView.findViewById(R.id.seven_day_rate);
-                                                            finalAmount += amount.getText().toString();
-                                                        } else if (checkFifteenDay.isChecked()) {
-                                                            TextView amount = bottomSheetView.findViewById(R.id.fifteen_day_rate);
-                                                            finalAmount += amount.getText().toString();
-                                                        } else if (checkOneMonth.isChecked()) {
-                                                            TextView amount = bottomSheetView.findViewById(R.id.one_month_rate);
-                                                            finalAmount += amount.getText().toString();
-                                                        } else if (checkNone.isChecked()) {
-                                                            TextView amount = bottomSheetView.findViewById(R.id.order_amount);
-                                                            finalAmount += amount.getText().toString();
+                                                        if (isSeven + isFifteen + isOneMonth + isNone == 0)
+                                                            Toast.makeText(DisplayTheCentreActivity.this, "Please select one option", Toast.LENGTH_SHORT).show();
+                                                        else if (isSeven + isFifteen + isOneMonth + isNone == 1) {
+
+                                                            String finalAmount = "";
+
+                                                            int subscriptionPlan = 0 ;
+                                                            boolean areAddOns = false ;
+                                                            int noOfChapatis = 0;
+                                                            int noOfCurds = 0;
+                                                            int noOfSweetDishes = 0;
+                                                            if (checkSeven.isChecked()) {
+                                                                TextView amount = bottomSheetView.findViewById(R.id.seven_day_rate);
+                                                                finalAmount += amount.getText().toString();
+                                                                subscriptionPlan = 7;
+                                                            } else if (checkFifteenDay.isChecked()) {
+                                                                TextView amount = bottomSheetView.findViewById(R.id.fifteen_day_rate);
+                                                                finalAmount += amount.getText().toString();
+                                                                subscriptionPlan = 15;
+                                                            } else if (checkOneMonth.isChecked()) {
+                                                                TextView amount = bottomSheetView.findViewById(R.id.one_month_rate);
+                                                                finalAmount += amount.getText().toString();
+                                                                subscriptionPlan = 30;
+                                                            } else if (checkNone.isChecked()) {
+                                                                TextView amount = bottomSheetView.findViewById(R.id.order_amount);
+                                                                finalAmount += amount.getText().toString();
+                                                                subscriptionPlan = 0;
+                                                                TextView v = bottomSheetView.findViewById(R.id.tiffin_quantity) ;
+                                                                noOfTiffins = Integer.parseInt(v.getText().toString());
+                                                                if(currentCentre.getIsChapatiAddOn()){
+                                                                    TextView t = findViewById(addOnChapatiViewId).findViewById(R.id.addon_quantity_textview);
+                                                                    noOfChapatis = Integer.parseInt(t.getText().toString());
+                                                                }
+                                                                if(currentCentre.getIsSweetdishAddOn()){
+                                                                    TextView t = findViewById(addOnSweetDishViewId).findViewById(R.id.addon_quantity_textview);
+                                                                    noOfSweetDishes = Integer.parseInt(t.getText().toString());
+                                                                }
+                                                                if(currentCentre.getIsCurdAddOn()){
+                                                                    TextView t = findViewById(addOnCurdViewId).findViewById(R.id.addon_quantity_textview);
+                                                                    noOfCurds = Integer.parseInt(t.getText().toString());
+                                                                }
+
+                                                            }
+
+
+                                                            EditText deliveryAddressField = bottomSheetView.findViewById(R.id.delivery_address_field);
+                                                            String deliveryAddress = deliveryAddressField.getText().toString();
+                                                            if(Integer.parseInt(finalAmount.substring(3))>0  && deliveryAddress != null) {
+                                                                Intent intent = new Intent(DisplayTheCentreActivity.this, PaymentActivity.class);
+                                                                intent.putExtra("Amount1", finalAmount);
+                                                                intent.putExtra("Current_centre", currentCentre);
+                                                                areAddOns = (noOfChapatis + noOfCurds + noOfSweetDishes)>0 ;
+                                                                OnOrderDetails onOrderDetails = new OnOrderDetails(currentCentre.getEmail() , userEmail , currentMenuUId , subscriptionPlan , areAddOns , noOfTiffins , noOfChapatis , noOfCurds , noOfSweetDishes , deliveryAddress);
+                                                                intent.putExtra("OnOrderDetails" , (Parcelable) onOrderDetails) ;
+                                                                startActivity(intent);
+                                                            }
+                                                            else
+                                                                Toast.makeText(DisplayTheCentreActivity.this , "Your tiffin is empty or Enter a valid address" , Toast.LENGTH_SHORT).show();
                                                         }
-
-
-                                                        Toast.makeText(DisplayTheCentreActivity.this, "paytm username is  : " + currentCentre.getPaytm_username(), Toast.LENGTH_SHORT).show();
-
-                                                        Intent intent = new Intent(DisplayTheCentreActivity.this, PaymentActivity.class);
-                                                        intent.putExtra("Amount1", finalAmount);
-                                                        intent.putExtra("Current_centre", currentCentre);
-                                                        startActivity(intent);
-
-//                String upiId = "9521766675@paytm";
-//                String note = "hi";
-//                String name = currentCentre.getName();
-//
-//                Log.d(finalamount,"The amount is");
-//
-//                payUsingUpi(finalamount, upiId, name, note);
+                                                        else
+                                                            Toast.makeText(DisplayTheCentreActivity.this , "Please select only one option" , Toast.LENGTH_SHORT).show();
                                                     }
+
                                                 });
+
+                                                LinearLayout addOnsParentLayout = bottomSheetView.findViewById(R.id.addons_parent_layout) ;
+
+                                                if(currentTiffinCentre.getIsChapatiAddOn()){
+                                                    View child = getLayoutInflater().inflate(R.layout.addon_list_item , null);
+
+                                                    addOnChapatiViewId = View.generateViewId();
+                                                    child.setId(addOnChapatiViewId);
+//                                                    addOnChapatiViewId = child.getId() ;
+                                                    TextView addonName = child.findViewById(R.id.addon_name_textview) ;
+                                                    addonName.setText("Chapati");
+                                                    TextView addonQuantity = child.findViewById(R.id.addon_quantity_textview) ;
+                                                    Button incButton = child.findViewById(R.id.increment_addon_button);
+                                                    Button decButton = child.findViewById(R.id.decrement_addon_button);
+                                                    incButton.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            if (noneCheckBox.isChecked()) {
+                                                                addonQuantity.setText("" + (Integer.parseInt(addonQuantity.getText().toString()) + 1));
+                                                                TextView orderAmount = bottomSheetView.findViewById(R.id.order_amount);
+                                                                orderAmount.setText("Rs " + (Integer.parseInt(orderAmount.getText().toString().substring(3)) + currentTiffinCentre.getChapatiRate()));
+                                                            }
+                                                            else{
+                                                                Toast.makeText(DisplayTheCentreActivity.this , "Please select the None option for Ordering now", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                                    decButton.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            if(noneCheckBox.isChecked()) {
+                                                                if (Integer.parseInt(addonQuantity.getText().toString()) != 0) {
+                                                                    addonQuantity.setText("" + (Integer.parseInt(addonQuantity.getText().toString()) - 1));
+                                                                    TextView orderAmount = bottomSheetView.findViewById(R.id.order_amount);
+                                                                    orderAmount.setText("Rs " + (Integer.parseInt(orderAmount.getText().toString().substring(3)) - currentTiffinCentre.getChapatiRate()));
+                                                                }
+                                                                else{
+                                                                    Toast.makeText(DisplayTheCentreActivity.this , "Please select the None option for Ordering now", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                    addOnsParentLayout.addView(child);
+                                                }
+
+                                                if(currentTiffinCentre.getIsSweetdishAddOn()){
+                                                    View child = getLayoutInflater().inflate(R.layout.addon_list_item , null);
+                                                    child.setId(View.generateViewId());
+                                                    addOnSweetDishViewId = child.getId() ;
+                                                    TextView addonName = child.findViewById(R.id.addon_name_textview) ;
+                                                    addonName.setText("Sweet Dish");
+                                                    TextView addonQuantity = child.findViewById(R.id.addon_quantity_textview) ;
+                                                    Button incButton = child.findViewById(R.id.increment_addon_button);
+                                                    Button decButton = child.findViewById(R.id.decrement_addon_button);
+                                                    incButton.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            if (noneCheckBox.isChecked()) {
+                                                                addonQuantity.setText("" + (Integer.parseInt(addonQuantity.getText().toString()) + 1));
+                                                                TextView orderAmount = bottomSheetView.findViewById(R.id.order_amount);
+                                                                orderAmount.setText("Rs " + (Integer.parseInt(orderAmount.getText().toString().substring(3)) + currentTiffinCentre.getSweetdishRate()));
+                                                            }
+                                                            else{
+                                                                Toast.makeText(DisplayTheCentreActivity.this , "Please select the None option for Ordering now", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                                    decButton.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            if (noneCheckBox.isChecked()) {
+                                                                if (Integer.parseInt(addonQuantity.getText().toString()) != 0) {
+                                                                    addonQuantity.setText("" + (Integer.parseInt(addonQuantity.getText().toString()) - 1));
+                                                                    TextView orderAmount = bottomSheetView.findViewById(R.id.order_amount);
+                                                                    orderAmount.setText("Rs " + (Integer.parseInt(orderAmount.getText().toString().substring(3)) - currentTiffinCentre.getSweetdishRate()));
+                                                                }
+                                                            }
+                                                            else{
+                                                                Toast.makeText(DisplayTheCentreActivity.this , "Please select the None option for Ordering now", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                                    addOnsParentLayout.addView(child);
+                                                }
+                                                if(currentTiffinCentre.getIsCurdAddOn()){
+                                                    View child = getLayoutInflater().inflate(R.layout.addon_list_item , null);
+                                                    child.setId(View.generateViewId());
+                                                    addOnCurdViewId = child.getId() ;
+                                                    TextView addonName = child.findViewById(R.id.addon_name_textview) ;
+                                                    addonName.setText("Curd");
+                                                    TextView addonQuantity = child.findViewById(R.id.addon_quantity_textview) ;
+                                                    Button incButton = child.findViewById(R.id.increment_addon_button);
+                                                    Button decButton = child.findViewById(R.id.decrement_addon_button);
+                                                    incButton.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            if (noneCheckBox.isChecked()) {
+                                                                addonQuantity.setText("" + (Integer.parseInt(addonQuantity.getText().toString()) + 1));
+                                                                TextView orderAmount = bottomSheetView.findViewById(R.id.order_amount);
+                                                                orderAmount.setText("Rs " + (Integer.parseInt(orderAmount.getText().toString().substring(3)) + currentTiffinCentre.getCurdRate()));
+                                                            }
+                                                            else{
+                                                                Toast.makeText(DisplayTheCentreActivity.this , "Please select the None option for Ordering now", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                                    decButton.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            if (noneCheckBox.isChecked()) {
+                                                                if (Integer.parseInt(addonQuantity.getText().toString()) != 0) {
+                                                                    addonQuantity.setText("" + (Integer.parseInt(addonQuantity.getText().toString()) - 1));
+                                                                    TextView orderAmount = bottomSheetView.findViewById(R.id.order_amount);
+                                                                    orderAmount.setText("Rs " + (Integer.parseInt(orderAmount.getText().toString().substring(3)) - currentTiffinCentre.getCurdRate()));
+                                                                }
+                                                            }
+                                                            else{
+                                                                Toast.makeText(DisplayTheCentreActivity.this , "Please select the None option for Ordering now", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                                    addOnsParentLayout.addView(child);
+                                                }
 
                                                 bottomSheetDialog.setContentView(bottomSheetView);
                                                 bottomSheetDialog.show();
+
                                             }
                                         });
 
