@@ -94,6 +94,8 @@ public class CentreManagementTransactionsActivity extends AppCompatActivity {
                     Log.e("hi", "HI HERE : ");
                     Transactions order = snapshot1.toObject(Transactions.class);
 
+                    Log.d("Transactions Activity", "onEvent: "+order.getTimestamp());
+
                     orders.add(order);
                     adapter.notifyDataSetChanged();
                 }

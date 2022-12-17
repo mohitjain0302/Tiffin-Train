@@ -5,52 +5,94 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding = "16dp"
-    android:minHeight="64dp"
+    android:minHeight="72dp"
     android:background="#ffecb3">
-        <LinearLayout
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="8dp">
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/rupee_logo"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+
+        android:id = "@+id/amount_text_view"
+        tools:text = "400"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle = "bold"
+        android:textSize="22sp"
+        android:textColor="#2e7d32"
+        />
+
+    </LinearLayout>
+
+    <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="4">
+            android:layout_weight="1"
+        android:layout_gravity="center_vertical">
 
             <TextView
 
-                android:text = "From : "
-
+                android:text = "Received:"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-
                 android:textSize="16sp"
-
                 />
 
             <TextView
-
                 android:id = "@+id/payer_name_text_view"
-                tools:text = "payer's name"
+                tools:text = "payer's name 123 @gma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:textStyle = "bold"
-                android:textSize="24sp"
-
+                android:textSize="20sp"
+                android:textColor="@color/black"
                 />
 
         </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical">
+
         <TextView
-
-            android:id = "@+id/amount_text_view"
-            tools:text = "Rs 40"
-            android:layout_width="0dp"
+            android:id="@+id/time_text_view"
+            tools:text = "14:28"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textStyle = "bold"
-            android:textSize="24sp"
-
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
             />
+
+        <TextView
+            android:id="@+id/date_text_view"
+            tools:text = "2022-12-17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle = "bold"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            />
+
+    </LinearLayout>
+
+
+
 
 
     </LinearLayout>

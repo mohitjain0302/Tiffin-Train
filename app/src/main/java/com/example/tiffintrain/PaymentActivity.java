@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -54,7 +55,10 @@ public class PaymentActivity extends AppCompatActivity {
         current_centre = (TiffinCentre) i.getSerializableExtra("Current_centre");
         onOrderDetails = (OnOrderDetails) i.getSerializableExtra("onOrderDetails") ;
 
-       Log.d("Chapatis", "onCreate: " + onOrderDetails.getNoOfChapatis());
+//       Log.d("Chapatis", "onCreate: " + onOrderDetails.getNoOfChapatis());
+
+//        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+//        Log.d("Time", "read_sms: inside order " + date);
 
         String UpiId = current_centre.getUpi_id();
 
@@ -127,7 +131,12 @@ public class PaymentActivity extends AppCompatActivity {
 
                 String user_email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
                 String tiffin_center_email = current_centre.getEmail();
-                Transactions transaction = new Transactions(user_email,tiffin_center_email,amount);
+                String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+                Transactions transaction = new Transactions(user_email,tiffin_center_email,amount,date);
+
+
+                Log.d("Time", "read_sms: inside order " + date);
+
 
                 FirebaseFirestore.getInstance().collection("Transactions").add(transaction).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -138,7 +147,7 @@ public class PaymentActivity extends AppCompatActivity {
                             public void onSuccess(DocumentReference documentReference) {
                                 onOrderDetails.setOrderUId(documentReference.getId());
                                 documentReference.update("orderUId" , onOrderDetails.getOrderUId()) ;
-                                Log.d("Order not dispaying", "read_sms: inside order");
+//                                Log.d("Order not dispaying", "read_sms: inside order");
                                 Toast.makeText(PaymentActivity.this , "Order Placed",Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(PaymentActivity.this , DisplayTheCentreActivity.class) ;
                                 intent.putExtra("centre" , current_centre) ;
