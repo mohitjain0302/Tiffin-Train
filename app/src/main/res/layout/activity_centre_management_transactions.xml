@@ -6,10 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".CentreManagementTransactionsActivity">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
     <ListView
         android:id="@+id/transaction_list"
@@ -22,8 +18,6 @@
         android:background="@color/background_pitch">
 
     </ListView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 
     <LinearLayout
         android:id="@+id/bottom_buttons_layout"
@@ -86,6 +80,11 @@
 
         </LinearLayout>
 
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#FFCC80"/>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -108,6 +107,11 @@
                 android:textStyle="bold"/>
 
         </LinearLayout>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#FFCC80"/>
 
         <LinearLayout
             android:layout_width="0dp"

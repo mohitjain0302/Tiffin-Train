@@ -148,6 +148,7 @@ public class ViewAndEditMenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(ViewAndEditMenuActivity.this , CentreManagementActivity.class));
+                finish();
             }
         });
 
@@ -157,6 +158,7 @@ public class ViewAndEditMenuActivity extends AppCompatActivity {
                 Intent intent = new Intent(ViewAndEditMenuActivity.this,CentreManagementTransactionsActivity.class);
                 intent.putExtra("key_current_user_email" , currentUserEmail) ;
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -165,6 +167,7 @@ public class ViewAndEditMenuActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ViewAndEditMenuActivity.this,CentreManagementOrdersActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }
@@ -254,8 +257,11 @@ public class ViewAndEditMenuActivity extends AppCompatActivity {
 
         }
 
-
-
         return true;
+    }
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(ViewAndEditMenuActivity.this , CentreManagementActivity.class));
+        finish();
     }
 }

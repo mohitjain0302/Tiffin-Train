@@ -7,13 +7,15 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:layout_marginTop="8dp"
-    android:background="@color/background_pitch">
+    android:background="#ffecb3">
 
     <ImageView
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         android:src="@drawable/tiffin_img"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        android:layout_gravity="center"
+        android:layout_marginRight="4dp"/>
 
     <LinearLayout
         android:layout_width="0dp"

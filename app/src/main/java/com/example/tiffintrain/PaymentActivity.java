@@ -30,7 +30,7 @@ public class PaymentActivity extends AppCompatActivity {
 
     TiffinCentre current_centre;
     TextView Amount;
-    OnOrderDetails onOrderDetails ;
+    private OnOrderDetails onOrderDetails ;
     Button pay_b;
     String amount;
     FirebaseAuth mAuth ;
@@ -49,8 +49,12 @@ public class PaymentActivity extends AppCompatActivity {
         amount = i.getStringExtra("Amount1");
         amount = amount.substring(3);
         amount = "Rs. " + amount ;
+
+
         current_centre = (TiffinCentre) i.getSerializableExtra("Current_centre");
-        onOrderDetails = (OnOrderDetails) i.getSerializableExtra("OnOrderDetails") ;
+        onOrderDetails = (OnOrderDetails) i.getSerializableExtra("onOrderDetails") ;
+
+       Log.d("Chapatis", "onCreate: " + onOrderDetails.getNoOfChapatis());
 
         String UpiId = current_centre.getUpi_id();
 
@@ -104,6 +108,7 @@ public class PaymentActivity extends AppCompatActivity {
         int i;
         String paytm_user_name = current_centre.getPaytm_username();
       //  Toast.makeText(PaymentActivity.this,"Paytm username is  : " + paytm_user_name,Toast.LENGTH_SHORT).show();
+        Log.d("Amount Problem", "read_sms: "+ amount);
 
        for(i=0;i<msgsize;i++){
 
@@ -112,13 +117,13 @@ public class PaymentActivity extends AppCompatActivity {
 
 //           Log.d("hello", "in jaa raha : ");
 
-            if((address.contains("Paytm") || address.contains("PAYTM")) && address.contains(amount)){
+            if((address.contains("Paytm") || address.contains("PAYTM")) && body.contains(amount)){
 
                 flag=1;
 
-//                Log.d("hello", "jaa raha : ");
+//             Log.d("hello", "jaa raha : ");
 
-                Toast.makeText(PaymentActivity.this,"Payment Successful : ",Toast.LENGTH_SHORT).show();
+                Log.d("Order not dispaying", "read_sms: outside order" + onOrderDetails.getNoOfChapatis());
 
                 String user_email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
                 String tiffin_center_email = current_centre.getEmail();
@@ -131,12 +136,19 @@ public class PaymentActivity extends AppCompatActivity {
                         FirebaseFirestore.getInstance().collection("Orders").add(onOrderDetails).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
+                                onOrderDetails.setOrderUId(documentReference.getId());
+                                documentReference.update("orderUId" , onOrderDetails.getOrderUId()) ;
+                                Log.d("Order not dispaying", "read_sms: inside order");
                                 Toast.makeText(PaymentActivity.this , "Order Placed",Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(PaymentActivity.this , DisplayTheCentreActivity.class) ;
+                                intent.putExtra("centre" , current_centre) ;
+                                startActivity(intent);
+                                finish();
                             }
                         });
+
                     }
                 });
-
                 break;
             }
 

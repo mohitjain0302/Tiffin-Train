@@ -108,6 +108,7 @@ public class CreateMenuActivity extends AppCompatActivity {
                     Intent intent = new Intent(CreateMenuActivity.this , ViewAndEditMenuActivity.class);
                     intent.putExtra("key_current_user_email" , currentUserEmail) ;
                     startActivity(intent);
+                    finish();
                 } else {
                     menuUIds = currentTiffinCentre.getMenuUIds() ;
                     menuUIds.add(menuUId);
@@ -117,6 +118,7 @@ public class CreateMenuActivity extends AppCompatActivity {
                     Intent intent = new Intent(CreateMenuActivity.this , ViewAndEditMenuActivity.class);
                     intent.putExtra("key_current_user_email" , currentUserEmail) ;
                     startActivity(intent);
+                    finish();
                 }
 
             }

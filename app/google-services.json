@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "712560590463-702qiel3dgqqjp5b9do9bkpcn4dbhuup.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tiffintrain",
+            "certificate_hash": "e9b98747eb9d47f331b026d454b3cb15108eb3c5"
+          }
+        },
+        {
           "client_id": "712560590463-1deif0vpk2a5u1vkiaj28uso7i6gqf3q.apps.googleusercontent.com",
           "client_type": 3
         }

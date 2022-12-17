@@ -10,7 +10,7 @@ public class TiffinCentre implements Serializable {
     private String address ;
     private String email ;
     private int pincode ;
-    private int contactNo ;
+    private String contactNo ;
     private double centre_latitude;
     private double centre_longitude;
     private String myTiffinCentreImageUrl ;
@@ -28,7 +28,7 @@ public class TiffinCentre implements Serializable {
 
     }
 
-    public TiffinCentre(String name , String email , String address , int pincode , int contactNo , double centre_latitude , double centre_longitude, String upi_id,String paytm_username){
+    public TiffinCentre(String name , String email , String address , int pincode , String contactNo , double centre_latitude , double centre_longitude, String upi_id,String paytm_username){
         this.name = name ;
         this.address = address ;
         this.email = email ;
@@ -54,7 +54,7 @@ public class TiffinCentre implements Serializable {
         return name;
     }
 
-    public int getContactNo() {
+    public String getContactNo() {
         return contactNo;
     }
 

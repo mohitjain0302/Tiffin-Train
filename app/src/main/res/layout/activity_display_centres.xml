@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:drawSelectorOnTop="true"
     android:orientation="vertical"
-    android:padding="8dp"
+    android:padding="4dp"
     tools:context=".DisplayCentresActivity"
     android:background="@color/background_pitch">
 

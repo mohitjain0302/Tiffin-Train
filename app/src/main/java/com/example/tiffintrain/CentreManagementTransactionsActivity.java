@@ -50,6 +50,7 @@ public class CentreManagementTransactionsActivity extends AppCompatActivity {
                 Intent intent = new Intent(CentreManagementTransactionsActivity.this,CentreManagementActivity.class);
                 intent.putExtra("key_current_user_email" , currentUserEmail) ;
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -61,6 +62,7 @@ public class CentreManagementTransactionsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(CentreManagementTransactionsActivity.this,CentreManagementOrdersActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -71,13 +73,11 @@ public class CentreManagementTransactionsActivity extends AppCompatActivity {
                 Intent intent = new Intent(CentreManagementTransactionsActivity.this , ViewAndEditMenuActivity.class);
                 intent.putExtra("key_current_user_email" , currentUserEmail) ;
                 startActivity(intent);
+                finish();
             }
         });
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.refreshLayout);
-
 
         ArrayList<Transactions> orders = new ArrayList<>();
-
         TransactionAdapter adapter = new TransactionAdapter(this, orders);
         ListView listView = findViewById(R.id.transaction_list);
 //        listView.setAdapter(adapter);
@@ -95,11 +95,17 @@ public class CentreManagementTransactionsActivity extends AppCompatActivity {
                     Transactions order = snapshot1.toObject(Transactions.class);
 
                     orders.add(order);
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
-
+//        adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
 
+    }
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(CentreManagementTransactionsActivity.this , CentreManagementActivity.class));
+        finish();
     }
 }

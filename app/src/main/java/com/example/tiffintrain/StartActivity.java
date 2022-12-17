@@ -12,11 +12,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.os.Handler;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.Identity;
@@ -37,9 +40,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import static java.lang.Thread.sleep;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import static java.lang.Thread.sleep;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -54,7 +59,7 @@ public class StartActivity extends AppCompatActivity {
     Button manualSignInButton ;
     private User currentUser ;
 
-    @Override
+   /* @Override
     protected void onStart() {
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -75,12 +80,13 @@ public class StartActivity extends AppCompatActivity {
                 }
             });
         }
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
 
         loginEmailField = findViewById(R.id.login_email_field) ;
         loginPasswordField = findViewById(R.id.login_password_field) ;
@@ -164,15 +170,17 @@ public class StartActivity extends AppCompatActivity {
                                             User newUser = new User(name, email, 0);
                                             FirebaseFirestore.getInstance().collection("Users").document(email).set(newUser);
                                             startActivity(new Intent(getApplicationContext(), OwnerOptionActivity.class));
+                                            finish();
                                         } else {
                                             User user1 = document.toObject(User.class);
                                             if (user1.getIsOwner() == 1) {
                                                 startActivity(new Intent(getApplicationContext(), DisplayCentresActivity.class));
+                                                finish();
                                             } else if (user1.getIsOwner() == 2) {
                                                 startActivity(new Intent(getApplicationContext(), CentreManagementActivity.class));
+                                                finish();
                                             }
                                         }
-
                                     }
                                 }
                             });
@@ -193,6 +201,7 @@ public class StartActivity extends AppCompatActivity {
     public void signUp(View view) {
         Intent intent = new Intent(StartActivity.this, SignUpActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void loginUser(String email, String password) {
@@ -209,16 +218,21 @@ public class StartActivity extends AppCompatActivity {
                             if(user1.getIsOwner()==1){
                                 finish();
                                 startActivity(new Intent(StartActivity.this , DisplayCentresActivity.class));
-
+                                finish();
                             }
                             else if(user1.getIsOwner()==2){
                                 startActivity(new Intent(StartActivity.this , CentreManagementActivity.class));
-//                                finish();
+                                finish();
                             }
                         }
                     }
                 });
             }
         }) ;
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }

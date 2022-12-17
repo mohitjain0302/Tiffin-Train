@@ -5,45 +5,45 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@color/white"
-    android:padding = "16dp"
-    android:minHeight="@dimen/list_item_height"
-    >
+    android:padding = "4dp"
+    android:minHeight="100dp"
+    android:background="#ffecb3"
+    android:layout_marginBottom="8dp">
 
     <ImageView
         android:id = "@+id/tiffin_centre_image_in_list"
-        android:layout_width="@dimen/list_item_height"
-        android:layout_height="@dimen/list_item_height"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         android:src = "@drawable/tiffin"
+        android:scaleType="centerCrop"
         />
 
     <LinearLayout
         android:id = "@+id/text_container"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_height="match_parent"
-        >
+        android:layout_marginLeft="12dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
         <TextView
             android:id = "@+id/name_text_view"
-            tools:text = "Tiffin centre name"
-            android:layout_weight="1"
+            tools:text = "XYZ tiffin services"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textStyle = "bold"
-            android:textSize="20sp"
-            android:layout_gravity="bottom"
+            android:textSize="24sp"
+            android:layout_marginBottom="8dp"
             />
 
         <TextView
 
             android:id = "@+id/address_text_view"
-            tools:text = "Address"
+            tools:text = "Plot Number , Landmark , Area , Locality , City , State"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:textStyle = "bold"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:layout_gravity="top"
             />

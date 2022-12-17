@@ -73,7 +73,7 @@ public class CreateCentreActivity extends AppCompatActivity {
         Upi_id = findViewById(R.id.Upi_id_field);
         Paytm_username = findViewById(R.id.paytm_username);
 
-        TiffinCentre centre = new TiffinCentre(centreName.getText().toString(), default_email, address.getText().toString(), Integer.parseInt(pinCode.getText().toString()), Integer.parseInt(contactNo.getText().toString()), lati, longi,Upi_id.getText().toString(), Paytm_username.getText().toString());
+        TiffinCentre centre = new TiffinCentre(centreName.getText().toString(), default_email, address.getText().toString(), Integer.parseInt(pinCode.getText().toString()), contactNo.getText().toString(), lati, longi,Upi_id.getText().toString(), Paytm_username.getText().toString());
         FirebaseFirestore.getInstance().collection("Tiffin Centres").document(default_email).set(centre).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

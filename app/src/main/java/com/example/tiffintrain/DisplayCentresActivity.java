@@ -72,9 +72,11 @@ public class DisplayCentresActivity extends AppCompatActivity {
                 for (QueryDocumentSnapshot snapshot1 : value) {
                     TiffinCentre centre = snapshot1.toObject(TiffinCentre.class);
                     centres.add(centre);
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -86,7 +88,7 @@ public class DisplayCentresActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        listView.setAdapter(adapter);
+
     }
 
     @Override
@@ -110,10 +112,16 @@ public class DisplayCentresActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseAuth.getInstance().signOut(); // very important if you are using firebase.
                         startActivity(new Intent(DisplayCentresActivity.this, StartActivity.class));
+                        finish();
                     }
                 }
             });
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }

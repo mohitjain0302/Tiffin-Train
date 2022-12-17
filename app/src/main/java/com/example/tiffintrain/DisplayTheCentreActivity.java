@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -37,10 +38,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class DisplayTheCentreActivity extends AppCompatActivity {
+public class DisplayTheCentreActivity extends AppCompatActivity  {
 
     private TiffinCentre currentCentre;
     FirebaseAuth mAuth ;
@@ -53,10 +55,13 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
     private ImageView subtract_button;
     private TextView tiffinQuantity;
     final int UPI_PAYMENT = 0;
-    public int addOnChapatiViewId ;
+    private int addOnChapatiViewId ;
     private int addOnCurdViewId ;
     private int addOnSweetDishViewId ;
     private String userEmail;
+    private LinearLayout displayTheCentreMenuButton ;
+    private LinearLayout displayTheCentreDetailsButton ;
+    private LinearLayout addOnsParentLayout ;
     //private TextView number;
 
     @Override
@@ -64,20 +69,30 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_the_centre);
 
+        displayTheCentreMenuButton = findViewById(R.id.display_the_centre_menu_button);
+        displayTheCentreMenuButton.setBackgroundColor(Color.parseColor("#F57C00"));
+
+
+
+
         mAuth = FirebaseAuth.getInstance();
         userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
         currentCentre = (TiffinCentre) getIntent().getSerializableExtra("centre");
-        TextView contact = findViewById(R.id.contact_no_id);
-        TextView address = findViewById(R.id.address_id);
-        TextView centre = findViewById(R.id.tiffin_centre_name);
-        ImageView tiffin_centre_image = findViewById(R.id.tiffin_centre_image);
+
+
+        displayTheCentreDetailsButton = findViewById(R.id.display_the_centre_contact_button);
+        displayTheCentreDetailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DisplayTheCentreActivity.this , DisplayTheCentreDetailsActivity.class) ;
+                intent.putExtra("centre" , currentCentre) ;
+                startActivity(intent);
+            }
+        });
 
         centreMenusListLayout = findViewById(R.id.centre_menus_list_layout);
 
         tiffinQuantity = findViewById(R.id.tiffin_quantity);
-        contact.setText("" + currentCentre.getContactNo());
-        address.setText(currentCentre.getAddress());
-        centre.setText(currentCentre.getName());
         tiffinCentreUId = currentCentre.getEmail();
 
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Tiffin Centres").document(tiffinCentreUId);
@@ -143,6 +158,7 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
                                                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(DisplayTheCentreActivity.this);
                                                 View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.bottom_sheet_dialogue_order,
                                                         (LinearLayout) findViewById(R.id.bottomSheetContainerOrder));
+                                                addOnsParentLayout = bottomSheetView.findViewById(R.id.addons_parent_layout) ;
                                                 Button incrementButton = bottomSheetView.findViewById(R.id.increment_button);
                                                 Button decrementButton = bottomSheetView.findViewById(R.id.decrement_button);
                                                 CheckBox noneCheckBox = bottomSheetView.findViewById(R.id.check_none);
@@ -241,18 +257,26 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
                                                                 TextView v = bottomSheetView.findViewById(R.id.tiffin_quantity) ;
                                                                 noOfTiffins = Integer.parseInt(v.getText().toString());
                                                                 if(currentCentre.getIsChapatiAddOn()){
-                                                                    TextView t = findViewById(addOnChapatiViewId).findViewById(R.id.addon_quantity_textview);
-                                                                    noOfChapatis = Integer.parseInt(t.getText().toString());
+                                                                    View v1 = addOnsParentLayout.findViewById(addOnChapatiViewId) ;
+                                                                    if(v1!=null) {
+                                                                        TextView t = v1.findViewById(R.id.addon_quantity_textview);
+                                                                        noOfChapatis = Integer.parseInt(t.getText().toString());
+                                                                    }
+                                                                    }
+                                                                if(currentCentre.getIsSweetdishAddOn()) {
+                                                                    View v1 = addOnsParentLayout.findViewById(addOnSweetDishViewId);
+                                                                    if (v1 != null) {
+                                                                        TextView t = v1.findViewById(R.id.addon_quantity_textview);
+                                                                        noOfSweetDishes = Integer.parseInt(t.getText().toString());
+                                                                    }
                                                                 }
-                                                                if(currentCentre.getIsSweetdishAddOn()){
-                                                                    TextView t = findViewById(addOnSweetDishViewId).findViewById(R.id.addon_quantity_textview);
-                                                                    noOfSweetDishes = Integer.parseInt(t.getText().toString());
+                                                                if(currentCentre.getIsCurdAddOn()) {
+                                                                    View v1 = addOnsParentLayout.findViewById(addOnCurdViewId);
+                                                                    if (v1 != null) {
+                                                                        TextView t = v1.findViewById(R.id.addon_quantity_textview);
+                                                                        noOfCurds = Integer.parseInt(t.getText().toString());
+                                                                    }
                                                                 }
-                                                                if(currentCentre.getIsCurdAddOn()){
-                                                                    TextView t = findViewById(addOnCurdViewId).findViewById(R.id.addon_quantity_textview);
-                                                                    noOfCurds = Integer.parseInt(t.getText().toString());
-                                                                }
-
                                                             }
 
 
@@ -264,7 +288,9 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
                                                                 intent.putExtra("Current_centre", currentCentre);
                                                                 areAddOns = (noOfChapatis + noOfCurds + noOfSweetDishes)>0 ;
                                                                 OnOrderDetails onOrderDetails = new OnOrderDetails(currentCentre.getEmail() , userEmail , currentMenuUId , subscriptionPlan , areAddOns , noOfTiffins , noOfChapatis , noOfCurds , noOfSweetDishes , deliveryAddress);
-                                                                intent.putExtra("OnOrderDetails" , (Parcelable) onOrderDetails) ;
+                                                                Log.d("Previous activity", "onClick: " + onOrderDetails.getUserEmail());
+                                                                intent.putExtra("onOrderDetails" ,  onOrderDetails) ;
+
                                                                 startActivity(intent);
                                                             }
                                                             else
@@ -276,14 +302,14 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
 
                                                 });
 
-                                                LinearLayout addOnsParentLayout = bottomSheetView.findViewById(R.id.addons_parent_layout) ;
+//                                                addOnsParentLayout = bottomSheetView.findViewById(R.id.addons_parent_layout) ;
 
                                                 if(currentTiffinCentre.getIsChapatiAddOn()){
                                                     View child = getLayoutInflater().inflate(R.layout.addon_list_item , null);
 
-                                                    addOnChapatiViewId = View.generateViewId();
-                                                    child.setId(addOnChapatiViewId);
-//                                                    addOnChapatiViewId = child.getId() ;
+                                                    child.setId(View.generateViewId());
+                                                    addOnChapatiViewId = child.getId() ;
+                                                    Log.d("ChapatiViewId", "onClick: " + addOnChapatiViewId);
                                                     TextView addonName = child.findViewById(R.id.addon_name_textview) ;
                                                     addonName.setText("Chapati");
                                                     TextView addonQuantity = child.findViewById(R.id.addon_quantity_textview) ;
@@ -363,6 +389,7 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
                                                     View child = getLayoutInflater().inflate(R.layout.addon_list_item , null);
                                                     child.setId(View.generateViewId());
                                                     addOnCurdViewId = child.getId() ;
+                                                    Log.d("CurdViewId", "onClick: " + addOnCurdViewId);
                                                     TextView addonName = child.findViewById(R.id.addon_name_textview) ;
                                                     addonName.setText("Curd");
                                                     TextView addonQuantity = child.findViewById(R.id.addon_quantity_textview) ;
@@ -404,46 +431,25 @@ public class DisplayTheCentreActivity extends AppCompatActivity {
 
                                             }
                                         });
-
-
                                         centreMenusListLayout.addView(listItemView);
                                     }
                                 }
                             });
 
-                            if (currentCentre.getMyTiffinCentreImageUrl() != null) {
-                                Picasso.with(DisplayTheCentreActivity.this).load(currentCentre.getMyTiffinCentreImageUrl()).fit().centerCrop().into(tiffin_centre_image);
-                            }
                         }
 
                     }
                 }
             }
         });
-
-        contact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + currentCentre.getContactNo()));
-                startActivity(intent);
-            }
-        });
-
-
-
-
     }
 
-    public void showMap(View view) {
-        double latitude = currentCentre.getCentre_latitude();
-        double longitude = currentCentre.getCentre_longitude();
-        String strUri = "http://maps.google.com/maps?q=loc:" + latitude + "," + longitude + " (" + "Label which you want" + ")";
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(strUri));
-        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-        startActivity(intent);
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(DisplayTheCentreActivity.this , DisplayCentresActivity.class));
+        finish();
+//        super.onBackPressed();
     }
-
 }
 
 

@@ -84,6 +84,11 @@
 
         </LinearLayout>
 
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#FFCC80"/>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -106,6 +111,11 @@
                 android:textStyle="bold"/>
 
         </LinearLayout>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#FFCC80"/>
 
         <LinearLayout
             android:layout_width="0dp"

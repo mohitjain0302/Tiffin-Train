@@ -11,9 +11,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,6 +64,7 @@ public class CentreManagementOrdersActivity extends AppCompatActivity {
                 Intent intent = new Intent(CentreManagementOrdersActivity.this,CentreManagementTransactionsActivity.class);
                 intent.putExtra("key_current_user_email" , tiffin_centre_email) ;
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -70,6 +73,7 @@ public class CentreManagementOrdersActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(CentreManagementOrdersActivity.this,CentreManagementActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -80,6 +84,7 @@ public class CentreManagementOrdersActivity extends AppCompatActivity {
                 Intent intent = new Intent(CentreManagementOrdersActivity.this , ViewAndEditMenuActivity.class);
                 intent.putExtra("key_current_user_email" , tiffin_centre_email) ;
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -103,7 +108,7 @@ public class CentreManagementOrdersActivity extends AppCompatActivity {
                                 Menu menu = value.toObject(Menu.class) ;
 
                                 if(menu != null)
-                                orderNameTextView.setText(menu.getMenuName());
+                                orderNameTextView.setText("Menu : " + menu.getMenuName());
                             }
                         });
                         if(order.getSubscriptionPlan()!=0)
@@ -116,6 +121,19 @@ public class CentreManagementOrdersActivity extends AppCompatActivity {
                                 AlertDialog.Builder alert = new AlertDialog.Builder(CentreManagementOrdersActivity.this) ;
                                 View orderDetailsDialog = getLayoutInflater().inflate(R.layout.order_details_dialogue,null);
                                 TextView dialogueMenuName = orderDetailsDialog.findViewById(R.id.dialogue_menu_name) ;
+                                Button orderCompletedButton = orderDetailsDialog.findViewById(R.id.order_completed_button);
+                                orderCompletedButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        FirebaseFirestore.getInstance().collection("Orders").document(order.getOrderUId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Toast.makeText(CentreManagementOrdersActivity.this , "Order Completed" , Toast.LENGTH_SHORT).show();
+                                                view.setVisibility(View.GONE);
+                                            }
+                                        });
+                                    }
+                                });
                                 DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Menus").document(order.getMenuId()) ;
                                 documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                     @Override
@@ -161,5 +179,11 @@ public class CentreManagementOrdersActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(CentreManagementOrdersActivity.this , CentreManagementActivity.class));
+        finish();
     }
 }

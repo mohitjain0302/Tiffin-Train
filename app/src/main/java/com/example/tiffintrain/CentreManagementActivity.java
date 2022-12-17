@@ -75,6 +75,7 @@ public class CentreManagementActivity extends AppCompatActivity {
                 Intent intent = new Intent(CentreManagementActivity.this,CentreManagementTransactionsActivity.class);
                 intent.putExtra("key_current_user_email" , currentUserEmail) ;
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -83,6 +84,7 @@ public class CentreManagementActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(CentreManagementActivity.this,CentreManagementOrdersActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -93,6 +95,7 @@ public class CentreManagementActivity extends AppCompatActivity {
                 Intent intent = new Intent(CentreManagementActivity.this , ViewAndEditMenuActivity.class);
                 intent.putExtra("key_current_user_email" , currentUserEmail) ;
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -108,7 +111,7 @@ public class CentreManagementActivity extends AppCompatActivity {
                     TextView centreName = findViewById(R.id.tiffin_centre_name);
                     centreName.setText(currentCentre.getName());
                     TextView contactNo = findViewById(R.id.contact_no_id);
-                    contactNo.setText(Integer.toString(currentCentre.getContactNo()));
+                    contactNo.setText(currentCentre.getContactNo());
 
                     TextView address = findViewById(R.id.address_id);
                     address.setText(currentCentre.getAddress());
@@ -145,6 +148,7 @@ public class CentreManagementActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseAuth.getInstance().signOut(); // very important if you are using firebase.
                         startActivity(new Intent(CentreManagementActivity.this, StartActivity.class));
+                        finish();
                     }
                 }
             });
@@ -205,5 +209,10 @@ public class CentreManagementActivity extends AppCompatActivity {
         {
             Toast.makeText(CentreManagementActivity.this,"No Image Selected" , Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true) ;
     }
 }
